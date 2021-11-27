@@ -1,0 +1,13 @@
+<div>
+    <h1><a href="/">Cotações Moedas</a></h1>
+</div>
+
+{% for rate in histRates %}
+    <div>
+        <p>Data:	{{ rate.date }}</p>
+        <p>Base:	{{ rate.base }}</p>
+        <p>EUR:		{{rate.eur}}</p>
+        <p>BRL:		{{rate.brl}}</p>
+        <p>JPY:		{{rate.jpy}}</p>
+    </div>
+{% endfor %}
