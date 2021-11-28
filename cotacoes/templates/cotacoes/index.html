@@ -1,17 +1,134 @@
+<!DOCTYPE html>
 <head>
-  <meta charset="UTF-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		{% block script %}
+		{% load static %}
+		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+		<link rel="stylesheet" href="{% static 'css/cotacoes.css' %}">
+		<link rel="stylesheet" href="{% static 'css/highcharts.css' %}">		
+	
+		<script src="{% static 'js/highcharts.js' %}"></script>
+		<script src="{% static 'js/modules/data.js' %}"></script>
+		<script src="{% static 'js/modules/exporting.js' %}"></script>
+		<script src="{% static 'js/modules/accessibility.js' %}"></script>
+		
+		{% endblock %}
+		<script type="text/javascript">
+			Highcharts.chart('container', {
+			    data: {
+			        table: 'datatable'
+			    },
+			    chart: {
+			        type: 'column'
+			    },
+			    title: {
+			        text: 'Cotações Moeda'
+			    },
+			    yAxis: {
+			        allowDecimals: false,
+			        title: {
+			            text: 'Units'
+			        }
+			    },
+			    tooltip: {
+			        formatter: function () {
+			            return '<b>' + this.series.name + '</b><br/>' +
+			                this.point.y + ' ' + this.point.name.toLowerCase();
+			        }
+			    }
+			});
+		</script>
 </head>
+<body>
+	<div class="page-header">
+	    <h1>Cotações Moedas</h1>
+	</div>
+	<form method = "GET">
+	    {{ form }}
+	    <input type = "submit" value = "Submit">
+	</form>
+	<div class="content container">
+	    <div class="row">
+	        <div class="col-md-4">
+	        	<h1>EUR</h1>		
+				{% for rate in data.histRates %}
+				    <div>
+				        <h5>Data:	{{ rate.date }}</h5>
+				        <p>EUR:		{{rate.eur |floatformat:2 }}</p>
+				    </div>
+				{% endfor %}      
+	        </div>
+	        <div class="col-md-4">			
+		        <h1>BRL</h1>		
+				{% for rate in data.histRates %}
+				    <div>
+				        <h5>Data:	{{ rate.date }}</h5>
+				        <p>BRL:		{{rate.brl |floatformat:2 }}</p>
+				    </div>
+				{% endfor %}      
+	        </div>
+	        <div class="col-md-4">			
+		        <h1>JPY</h1>		
+				{% for rate in data.histRates %}
+				    <div>
+				        <h5>Data:	{{ rate.date }}</h5>
+				        <p>JPY:		{{rate.jpy |floatformat:2 }}</p>
+				    </div>
+				{% endfor %}      
+	        </div>
+	    </div>
+	    <div class="row">
+		    {% if selected.0.brl is not None %}
+	        <h3>Moeda selecionada -> BRL</h3>
+	   		{% endif %}
+	        {% if selected.0.eur is not None %}
+	        <h3>Moeda selecionada -> EUR</h3>
+	   		{% endif %}
+	        {% if selected.0.jpy is not None %}
+	        <h3>Moeda selecionada -> JPY</h3>
+	   		{% endif %} 
+	    </div>
+	</div>
+	
+	<figure class="highcharts-figure">
+    <div id="container"></div>
+    <p class="highcharts-description">
+    </p>
 
-<div>
-    <h1><a href="/">Cotações Moedas</a></h1>
-</div>
+    <table id="datatable">
+        <thead>
+            <tr>
+				<th>DATA</th>
+                {% if selected.0.brl is not None %}
+                <th>BRL</th>
+   		        {% endif %}
+                {% if selected.0.eur is not None %}
+                <th>EUR</th>
+   		        {% endif %}
+                {% if selected.0.jpy is not None %}
+                <th>JPY</th>
+   		        {% endif %}          
+            </tr>
+        </thead>
+        <tbody>
+            	{% for g in selected %}
+                	<tr>
+		                <th>{{ g.date }}</th>
+		                {% if g.brl is not None %}
+   		                <th>{{ g.brl | floatformat:2 }}</th>
+   		                {% endif %}
+   		                {% if g.eur is not None %}
+   		                <th>{{ g.eur | floatformat:2 }}</th>
+   		                {% endif %}
+   		                {% if g.jpy is not None %}
+   		                <th>{{ g.jpy | floatformat:2 }}</th>
+   		                {% endif %}
+   		                
+		            </tr>
+                {% endfor %}
+        </tbody>
+    </table>
 
-{% for rate in histRates %}
-    <div>
-        <p>Data:	{{ rate.date }}</p>
-        <p>Base:	{{ rate.base }}</p>
-        <p>EUR:		{{rate.eur}}</p>
-        <p>BRL:		{{rate.brl}}</p>
-        <p>JPY:		{{rate.jpy}}</p>
-    </div>
-{% endfor %}
+</figure>
+</body>
