@@ -1,5 +1,7 @@
 import requests
 from datetime import date, timedelta
+from django.test import TestCase
+
 
 today = date.today()
 

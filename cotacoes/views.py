@@ -21,7 +21,7 @@ def index(request):
     
     #Select na base de dados
     today = date.today()
-    currentDate =  today - timedelta(days=5)
+    currentDate =  today - timedelta(days=7)
     histRates = historicalRates.objects.filter(date__gte=currentDate).order_by('date')
     
     #Montando Context
@@ -37,7 +37,7 @@ def selectCurrency(item, request):
     histRates = {}
     if item is not None:
         today = date.today()
-        currentDate =  today - timedelta(days=5)
+        currentDate =  today - timedelta(days=7)
         if item == '1':
             print(item)
             #Select BRL na base de dados
